@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Test A1 A2 B1 B2 - Mr & Mrs Salvo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 50%, #c7b8ff 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .header .subtitle {
+            color: #6b7280;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .header .website {
+            color: #7c3aed;
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .header .cta {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Level Selection */
+        .level-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .level-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+            border-color: #a855f7;
+        }
+
+        .level-card.active {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .level-card h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .level-card p {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .level-card.active p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Quiz Container */
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .quiz-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #1f2937;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f3f4f6;
+            border-color: #a855f7;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .option.correct {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .option.wrong {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #7c3aed;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter,
+        .option.correct .option-letter,
+        .option.wrong .option-letter {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Explanation */
+        .explanation {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 15px;
+            border-left: 5px solid #f59e0b;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .explanation p {
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .results-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .score-number {
+            font-size: 3.5em;
+            font-weight: 800;
+        }
+
+        .score-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .level-result {
+            font-size: 2em;
+            color: #7c3aed;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .recommendation h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .recommendation p {
+            color: #1e3a8a;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .question {
+                font-size: 1.1em;
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>PLACEMENT TEST A1 A2 B1 B2</h1>
+            <div class="subtitle">Disusun oleh Mr & Mrs Salvo</div>
+            <div class="website">salvoonlineclass.com</div>
+            <div class="cta">Kunjungi Website untuk Pendaftaran Kelas Private Online</div>
+        </div>
+
+        <!-- Level Selection -->
+        <div id="levelSelection" class="level-selection">
+            <div class="level-card" onclick="startLevel('A1')">
+                <h3>A1</h3>
+                <p>Beginner<br>50 Soal</p>
+            </div>
+            <div class="level-card" onclick="startLevel('A2')">
+                <h3>A2</h3>
+                <p>Elementary<br>50 Soal</p>
+            </div>
+            <div class="level-card" onclick="startLevel('B1')">
+                <h3>B1</h3>
+                <p>Intermediate<br>50 Soal</p>
+            </div>
+            <div class="level-card" onclick="startLevel('B2')">
+                <h3>B2</h3>
+                <p>Upper Intermediate<br>50 Soal</p>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quizContainer" class="quiz-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="question-counter" id="questionCounter">Soal 1 dari 50</div>
+            
+            <div class="question" id="questionText"></div>
+            
+            <div class="options" id="optionsContainer"></div>
+            
+            <div class="explanation" id="explanationBox">
+                <h4>📚 Penjelasan</h4>
+                <p id="explanationText"></p>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goHome()">
+                    🏠 Menu Awal
+                </button>
+                <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">
+                    ← Previous
+                </button>
+                <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="results-container">
+            <div class="score-display">
+                <div class="score-circle">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-label">Skor</div>
+                </div>
+                <div class="level-result" id="levelResult">Level A1</div>
+                <p id="scoreDetail">0/50 Benar</p>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Analisis Grammar per Topik</div>
+                    <canvas id="grammarChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Distribusi Jawaban</div>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="recommendation" id="recommendationBox">
+                <h3>📋 Rekomendasi</h3>
+                <p id="recommendationText"></p>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goHome()">
+                    🏠 Kembali ke Menu
+                </button>
+                <button class="btn btn-primary" onclick="restartLevel()">
+                    🔄 Ulangi Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database Soal (200 Soal - 50 per level)
+        const questionBank = {
+            A1: [
+                // Present Simple (10 soal)
+                {q: "She _____ to school every day.", options: ["go", "goes", "going", "gone"], correct: 1, topic: "Present Simple", explanation: "Subject 'She' adalah third person singular, maka verb harus ditambah -es (goes)."},
+                {q: "They _____ football on Sundays.", options: ["play", "plays", "playing", "played"], correct: 0, topic: "Present Simple", explanation: "Subject 'They' adalah plural, maka gunakan verb dasar 'play'."},
+                {q: "My brother _____ in a bank.", options: ["work", "works", "working", "worked"], correct: 1, topic: "Present Simple", explanation: "Subject 'My brother' adalah third person singular, maka verb ditambah -s (works)."},
+                {q: "We _____ breakfast at 7 AM.", options: ["have", "has", "having", "haved"], correct: 0, topic: "Present Simple", explanation: "Subject 'We' adalah plural, gunakan verb dasar 'have'."},
+                {q: "The sun _____ in the east.", options: ["rise", "rises", "rising", "rose"], correct: 1, topic: "Present Simple", explanation: "Fakta umum (general truth) menggunakan Present Simple. Subject 'The sun' singular, maka 'rises'."},
+                {q: "I _____ coffee every morning.", options: ["drink", "drinks", "drinking", "drank"], correct: 0, topic: "Present Simple", explanation: "Subject 'I' menggunakan verb dasar 'drink' dalam Present Simple."},
+                {q: "Cats _____ mice.", options: ["chase", "chases", "chasing", "chased"], correct: 0, topic: "Present Simple", explanation: "Subject 'Cats' adalah plural (hewan secara umum), gunakan verb dasar 'chase'."},
+                {q: "He _____ TV in the evening.", options: ["watch", "watches", "watching", "watched"], correct: 1, topic: "Present Simple", explanation: "Subject 'He' adalah third person singular, maka verb ditambah -es (watches)."},
+                {q: "Water _____ at 100 degrees Celsius.", options: ["boil", "boils", "boiling", "boiled"], correct: 1, topic: "Present Simple", explanation: "Fakta ilmiah menggunakan Present Simple. Subject 'Water' singular, maka 'boils'."},
+                {q: "My parents _____ in Jakarta.", options: ["live", "lives", "living", "lived"], correct: 0, topic: "Present Simple", explanation: "Subject 'My parents' adalah plural, gunakan verb dasar 'live'."},
+                
+                // Articles (10 soal)
+                {q: "I have _____ apple.", options: ["a", "an", "the", "-"], correct: 1, topic: "Articles", explanation: "Gunakan 'an' sebelum kata yang diawali huruf vokal (apple)."},
+                {q: "She is _____ teacher.", options: ["a", "an", "the", "-"], correct: 0, topic: "Articles", explanation: "Gunakan 'a' sebelum kata yang diawali huruf konsonan (teacher) untuk arti 'seorang'."},
+                {q: "_____ moon is bright tonight.", options: ["A", "An", "The", "-"], correct: 2, topic: "Articles", explanation: "Gunakan 'the' untuk benda yang unik/satu-satunya (the moon, the sun, the earth)."},
+                {q: "I like to eat _____ rice.", options: ["a", "an", "the", "-"], correct: 3, topic: "Articles", explanation: "Noun uncountable (rice) tidak menggunakan article dalam pengertian umum."},
+                {q: "He is _____ honest man.", options: ["a", "an", "the", "-"], correct: 1, topic: "Articles", explanation: "Meskipun 'honest' diawali 'h', dibaca dengan bunyi vokal /ɒ/, maka gunakan 'an'."},
+                {q: "_____ Amazon is a long river.", options: ["A", "An", "The", "-"], correct: 2, topic: "Articles", explanation: "Nama sungai tertentu menggunakan 'the' (the Amazon, the Nile)."},
+                {q: "I need _____ umbrella.", options: ["a", "an", "the", "-"], correct: 1, topic: "Articles", explanation: "Gunakan 'an' sebelum kata yang diawali bunyi vokal (umbrella /ʌ/)."},
+                {q: "She plays _____ piano very well.", options: ["a", "an", "the", "-"], correct: 2, topic: "Articles", explanation: "Alat musik selalu menggunakan 'the' (the piano, the guitar, the violin)."},
+                {q: "My father is _____ doctor.", options: ["a", "an", "the", "-"], correct: 0, topic: "Articles", explanation: "Profesi menggunakan 'a/an' untuk arti 'seorang'. 'Doctor' diawali konsonan, gunakan 'a'."},
+                {q: "_____ Mount Everest is the highest mountain.", options: ["A", "An", "The", "-"], correct: 3, topic: "Articles", explanation: "Nama gunung (Mount + Nama) umumnya tidak menggunakan article."},
+                
+                // Personal Pronouns (10 soal)
+                {q: "_____ am a student.", options: ["I", "You", "He", "They"], correct: 0, topic: "Pronouns", explanation: "Kata kerja 'am' hanya digunakan dengan subject 'I'."},
+                {q: "_____ is my best friend.", options: ["I", "She", "We", "They"], correct: 1, topic: "Pronouns", explanation: "Kata kerja 'is' menunjukkan subject tunggal. 'She' adalah jawaban yang tepat."},
+                {q: "_____ live in Bandung.", options: ["He", "She", "They", "It"], correct: 2, topic: "Pronouns", explanation: "Kata kerja 'live' (tanpa -s) menunjukkan subject jamak. 'They' adalah jawaban benar."},
+                {q: "Please give _____ a book.", options: ["I", "me", "my", "mine"], correct: 1, topic: "Pronouns", explanation: "Setelah verb 'give', gunakan object pronoun 'me', bukan subject pronoun 'I'."},
+                {q: "This is _____ house.", options: ["we", "our", "us", "ours"], correct: 1, topic: "Pronouns", explanation: "Sebelum noun 'house', gunakan possessive adjective 'our'."},
+                {q: "The book is _____.", options: ["my", "mine", "me", "I"], correct: 1, topic: "Pronouns", explanation: "Tanpa noun setelahnya, gunakan possessive pronoun 'mine' (= my book)."},
+                {q: "_____ dog is very cute.", options: ["Him", "His", "He", "Himself"], correct: 1, topic: "Pronouns", explanation: "Sebelum noun 'dog', gunakan possessive adjective 'his'."},
+                {q: "She loves _____ mother.", options: ["she", "her", "hers", "herself"], correct: 1, topic: "Pronouns", explanation: "Sebelum noun 'mother', gunakan possessive adjective 'her'."},
+                {q: "_____ are going to the park.", options: ["He", "She", "We", "It"], correct: 2, topic: "Pronouns", explanation: "Kata kerja 'are' menunjukkan subject jamak. 'We' adalah jawaban benar."},
+                {q: "Tell _____ the truth!", options: ["I", "me", "my", "mine"], correct: 1, topic: "Pronouns", explanation: "Setelah verb 'tell', gunakan object pronoun 'me'."},
+                
+                // Demonstratives (5 soal)
+                {q: "_____ is my pen.", options: ["This", "These", "Those", "They"], correct: 0, topic: "Demonstratives", explanation: "'This' digunakan untuk benda tunggal yang dekat dengan pembicara."},
+                {q: "_____ are my books.", options: ["This", "That", "These", "It"], correct: 2, topic: "Demonstratives", explanation: "'These' digunakan untuk benda jamak yang dekat dengan pembicara."},
+                {q: "Look at _____ bird in the tree!", options: ["this", "these", "those", "they"], correct: 0, topic: "Demonstratives", explanation: "'Bird' adalah singular dan diasumsikan dekat, gunakan 'this'."},
+                {q: "_____ shoes over there are expensive.", options: ["This", "That", "These", "Those"], correct: 3, topic: "Demonstratives", explanation: "'Those' digunakan untuk benda jamak yang jauh dari pembicara (over there)."},
+                {q: "Is _____ your bag?", options: ["this", "these", "those", "they"], correct: 0, topic: "Demonstratives", explanation: "'Bag' adalah singular, gunakan 'this' untuk menunjuk benda dekat."},
+                
+                // Prepositions of Place (5 soal)
+                {q: "The cat is _____ the table.", options: ["in", "on", "at", "to"], correct: 1, topic: "Prepositions", explanation: "Gunakan 'on' untuk benda yang berada di atas permukaan (on the table)."},
+                {q: "The books are _____ the bag.", options: ["on", "in", "at", "to"], correct: 1, topic: "Prepositions", explanation: "Gunakan 'in' untuk benda yang berada di dalam sesuatu (in the bag)."},
+                {q: "She is _____ school now.", options: ["in", "on", "at", "to"], correct: 2, topic: "Prepositions", explanation: "Gunakan 'at' untuk tempat tertentu/institusi (at school, at home, at work)."},
+                {q: "The picture is _____ the wall.", options: ["in", "on", "at", "above"], correct: 1, topic: "Prepositions", explanation: "Gunakan 'on' untuk benda yang menempel di permukaan (on the wall)."},
+                {q: "There is water _____ the bottle.", options: ["on", "in", "at", "above"], correct: 1, topic: "Prepositions", explanation: "Gunakan 'in' untuk benda cair yang berada di dalam wadah (in the bottle)."},
+                
+                // There is/are (5 soal)
+                {q: "_____ a book on the table.", options: ["There is", "There are", "It is", "They are"], correct: 0, topic: "There is/are", explanation: "Untuk singular noun 'a book', gunakan 'There is'."},
+                {q: "_____ many students in the class.", options: ["There is", "There are", "It is", "They are"], correct: 1, topic: "There is/are", explanation: "Untuk plural noun 'many students', gunakan 'There are'."},
+                {q: "_____ some milk in the fridge.", options: ["There is", "There are", "It is", "They are"], correct: 0, topic: "There is/are", explanation: "'Milk' adalah uncountable noun, dianggap singular, gunakan 'There is'."},
+                {q: "_____ two cats under the chair.", options: ["There is", "There are", "It is", "They are"], correct: 1, topic: "There is/are", explanation: "Untuk plural noun 'two cats', gunakan 'There are'."},
+                {q: "_____ a lot of traffic today.", options: ["There is", "There are", "It is", "They are"], correct: 0, topic: "There is/are", explanation: "'Traffic' adalah uncountable noun, gunakan 'There is'."},
+                
+                // Can/Can't (5 soal)
+                {q: "I _____ swim very well.", options: ["can", "cans", "can't", "is can"], correct: 0, topic: "Modal Verbs", explanation: "'Can' adalah modal verb yang tidak berubah bentuk untuk semua subject."},
+                {q: "She _____ speak French.", options: ["don't can", "cans", "can", "is can"], correct: 2, topic: "Modal Verbs", explanation: "Modal verb 'can' tetap 'can' untuk subject 'she' (tidak ada 'cans')."},
+                {q: "_____ you help me?", options: ["Can", "Do", "Are", "Is"], correct: 0, topic: "Modal Verbs", explanation: "'Can' digunakan untuk meminta bantuan/pilihan (request)."},
+                {q: "I _____ hear you. It's too noisy!", options: ["can", "can't", "don't", "am not"], correct: 1, topic: "Modal Verbs", explanation: "Dari konteks 'too noisy', artinya 'tidak bisa' dengar, gunakan 'can't'."},
+                {q: "Birds _____ fly.", options: ["can", "can't", "don't", "are"], correct: 0, topic: "Modal Verbs", explanation: "'Can' menyatakan kemampuan (ability). Burung memiliki kemampuan terbang."}
+            ],
+            A2: [
+                // Past Simple (10 soal)
+                {q: "I _____ to the cinema yesterday.", options: ["go", "went", "gone", "going"], correct: 1, topic: "Past Simple", explanation: "Kata kunci 'yesterday' menunjukkan Past Simple. 'Go' bentuk lampau adalah 'went'."},
+                {q: "She _____ a delicious cake last night.", options: ["make", "made", "maked", "making"], correct: 1, topic: "Past Simple", explanation: "'Last night' menunjukkan Past Simple. 'Make' bentuk lampau adalah 'made'."},
+                {q: "They _____ football two days ago.", options: ["play", "played", "playing", "plaid"], correct: 1, topic: "Past Simple", explanation: "'Two days ago' menunjukkan Past Simple. Verb regular tambahkan -ed (played)."},
+                {q: "He _____ late for school this morning.", options: ["is", "was", "were", "be"], correct: 1, topic: "Past Simple", explanation: "'This morning' (sudah lewat) menunjukkan Past Simple. Subject 'he' menggunakan 'was'."},
+                {q: "We _____ a great time at the party.", options: ["have", "had", "has", "having"], correct: 1, topic: "Past Simple", explanation: "Konteks party sudah lewat. 'Have' bentuk lampau adalah 'had'."},
+                {q: "Did you _____ your homework?", options: ["do", "did", "done", "doing"], correct: 0, topic: "Past Simple", explanation: "Setelah 'Did' (auxiliary verb), gunakan verb dasar 'do'."},
+                {q: "I didn't _____ the answer.", options: ["knew", "know", "known", "knowing"], correct: 1, topic: "Past Simple", explanation: "Setelah 'didn't', gunakan verb dasar 'know'."},
+                {q: "She _____ to Paris last summer.", options: ["go", "went", "gone", "going"], correct: 1, topic: "Past Simple", explanation: "'Last summer' menunjukkan Past Simple. 'Go' -> 'went'."},
+                {q: "The movie _____ very boring.", options: ["is", "was", "were", "be"], correct: 1, topic: "Past Simple", explanation: "Konteks menunjukkan pengalaman lampau. Subject 'movie' singular menggunakan 'was'."},
+                {q: "_____ they visit the museum?", options: ["Do", "Did", "Are", "Were"], correct: 1, topic: "Past Simple", explanation: "Untuk pertanyaan Past Simple dengan verb utama, gunakan 'Did'."},
+                
+                // Present Continuous (10 soal)
+                {q: "Look! It _____ right now.", options: ["rain", "rains", "is raining", "rained"], correct: 2, topic: "Present Continuous", explanation: "'Look!' dan 'right now' menunjukkan aksi sedang berlangsung. Gunakan Present Continuous (is raining)."},
+                {q: "She _____ a book at the moment.", options: ["read", "reads", "is reading", "reading"], correct: 2, topic: "Present Continuous", explanation: "'At the moment' menunjukkan aksi sedang berlangsung sekarang. Gunakan 'is reading'."},
+                {q: "They _____ TV now.", options: ["watch", "watches", "are watching", "watched"], correct: 2, topic: "Present Continuous", explanation: "'Now' menunjukkan Present Continuous. Subject 'they' + are + verb-ing."},
+                {q: "Please be quiet. I _____ to concentrate.", options: ["try", "tries", "am trying", "tried"], correct: 2, topic: "Present Continuous", explanation: "Konteks 'please be quiet' menunjukkan aksi sedang berlangsung. 'I am trying'."},
+                {q: "Why _____ you _____ at me?", options: ["do / look", "are / looking", "did / look", "is / looking"], correct: 1, topic: "Present Continuous", explanation: "Pertanyaan tentang aksi yang sedang terjadi menggunakan 'are looking' (you + are)."},
+                {q: "He _____ for his keys. He can't find them.", options: ["look", "looks", "is looking", "looked"], correct: 2, topic: "Present Continuous", explanation: "Konteks 'can't find them now' menunjukkan aksi sedang berlangsung. 'Is looking'."},
+                {q: "We _____ for a walk in the park.", options: ["go", "goes", "are going", "went"], correct: 2, topic: "Present Continuous", explanation: "Konteks menunjukkan rencana/rencana dekat atau aksi sedang berlangsung. 'Are going'."},
+                {q: "The children _____ in the garden.", options: ["play", "plays", "are playing", "played"], correct: 2, topic: "Present Continuous", explanation: "Konteks menunjukkan aksi sedang terjadi sekarang. 'Are playing'."},
+                {q: "I _____ my homework right now.", options: ["do", "does", "am doing", "doing"], correct: 2, topic: "Present Continuous", explanation: "'Right now' menunjukkan Present Continuous. 'I am doing'."},
+                {q: "What _____ you _____?", options: ["do / do", "are / doing", "did / do", "is / doing"], correct: 1, topic: "Present Continuous", explanation: "Pertanyaan umum tentang aktivitas yang sedang berlangsung menggunakan 'are doing'."},
+                
+                // Going to Future (10 soal)
+                {q: "I _____ visit my grandmother tomorrow.", options: ["will", "am going to", "go to", "going to"], correct: 1, topic: "Future", explanation: "'Tomorrow' menunjukkan rencana. 'Be going to' untuk rencana yang sudah direncanakan."},
+                {q: "Look at those black clouds. It _____ rain.", options: ["will", "is going to", "goes to", "raining"], correct: 1, topic: "Future", explanation: "Bukti visual sekarang menunjukkan prediksi akan terjadi. Gunakan 'is going to'."},
+                {q: "They _____ buy a new car next month.", options: ["will", "are going to", "going to", "go to"], correct: 1, topic: "Future", explanation: "'Next month' menunjukkan rencana yang sudah direncanakan. 'Are going to'."},
+                {q: "She _____ study medicine at university.", options: ["will", "is going to", "going to", "goes to"], correct: 1, topic: "Future", explanation: "Rencana studi yang sudah direncanakan menggunakan 'is going to'."},
+                {q: "We _____ have a meeting at 3 PM.", options: ["will", "are going to", "going to", "are"], correct: 1, topic: "Future", explanation: "Jadwal/rencana yang pasti menggunakan 'are going to'."},
+                {q: "I think it _____ be sunny tomorrow.", options: ["will", "is going to", "going to", "is"], correct: 0, topic: "Future", explanation: "Prediksi berdasarkan opini/pikiran menggunakan 'will', bukan 'going to'."},
+                {q: "He _____ probably _____ late.", options: ["will / be", "is / be", "going / be", "will / being"], correct: 0, topic: "Future", explanation: "'Probably' menunjukkan prediksi. 'Will be' untuk prediksi umum."},
+                {q: "_____ you _____ help me?", options: ["Will / help", "Are / helping", "Do / help", "Are / help"], correct: 0, topic: "Future", explanation: "Penawaran bantuan spontan menggunakan 'Will you help'."},
+                {q: "I promise I _____ be careful.", options: ["will", "am going to", "going to", "am"], correct: 0, topic: "Future", explanation: "Janji menggunakan 'will' (promise + will)."},
+                {q: "She _____ have a baby in June.", options: ["will", "is going to", "going to", "is"], correct: 1, topic: "Future", explanation: "Rencana/kepastian berdasarkan bukti sekarang (hamil) menggunakan 'is going to'."},
+                
+                // Comparatives & Superlatives (10 soal)
+                {q: "This book is _____ than that one.", options: ["interesting", "more interesting", "most interesting", "interestinger"], correct: 1, topic: "Comparatives", explanation: "Kata 'than' menunjukkan comparative. Kata sifat panjang (3+ suku kata) gunakan 'more'."},
+                {q: "She is the _____ girl in the class.", options: ["tall", "taller", "tallest", "more tall"], correct: 2, topic: "Superlatives", explanation: "'The' + superlative. Kata sifat pendek (1 suku kata) tambahkan -est (tallest)."},
+                {q: "Today is _____ than yesterday.", options: ["hot", "hotter", "hottest", "more hot"], correct: 1, topic: "Comparatives", explanation: "Kata sifat pendek (hot) bentuk comparative gandakan konsonan terakhir + -er (hotter)."},
+                {q: "This is the _____ movie I've ever seen.", options: ["good", "better", "best", "more good"], correct: 2, topic: "Superlatives", explanation: "'I've ever seen' menunjukkan superlative. 'Good' -> 'best' (irregular)."},
+                {q: "My house is _____ than yours.", options: ["big", "bigger", "biggest", "more big"], correct: 1, topic: "Comparatives", explanation: "Kata sifat pendek (big) gandakan konsonan terakhir + -er (bigger)."},
+                {q: "He runs _____ than his brother.", options: ["fast", "faster", "fastest", "more fast"], correct: 1, topic: "Comparatives", explanation: "Kata sifat pendek (fast) tambahkan -er (faster)."},
+                {q: "This exercise is _____ than the last one.", options: ["difficult", "more difficult", "most difficult", "difficulter"], correct: 1, topic: "Comparatives", explanation: "Kata sifat panjang (difficult) gunakan 'more' untuk comparative."},
+                {q: "She is _____ student in the school.", options: ["intelligent", "more intelligent", "the most intelligent", "intelligentest"], correct: 2, topic: "Superlatives", explanation: "Kata sifat panjang gunakan 'the most' untuk superlative."},
+                {q: "The weather is getting _____ and _____", options: ["bad / bad", "worse / worse", "worst / worst", "badder / badder"], correct: 1, topic: "Comparatives", explanation: "'Bad' bentuk comparative adalah 'worse'. Pola 'comparative and comparative'."},
+                {q: "Mount Everest is the _____ mountain in the world.", options: ["high", "higher", "highest", "more high"], correct: 2, topic: "Superlatives", explanation: "Kata sifat pendek (high) tambahkan -est (highest) untuk superlative."},
+                
+                // Present Perfect (5 soal)
+                {q: "I _____ never _____ to Japan.", options: ["have / been", "am / been", "did / go", "was / being"], correct: 0, topic: "Present Perfect", explanation: "'Never' + pengalaman hidup menggunakan Present Perfect 'have been'."},
+                {q: "She _____ just _____ lunch.", options: ["has / finished", "is / finishing", "did / finish", "was / finished"], correct: 0, topic: "Present Perfect", explanation: "'Just' menunjukkan aksi baru selesai. Present Perfect dengan 'has' (she)."},
+                {q: "_____ you ever _____ sushi?", options: ["Have / tried", "Did / try", "Are / trying", "Do / try"], correct: 0, topic: "Present Perfect", explanation: "'Ever' dalam pertanyaan pengalaman hidup menggunakan 'Have you tried'."},
+                {q: "We _____ known each other for 10 years.", options: ["have", "has", "are", "did"], correct: 0, topic: "Present Perfect", explanation: "'For 10 years' (durasi) menggunakan Present Perfect 'have known'."},
+                {q: "I _____ lost my keys. I can't find them.", options: ["have", "has", "am", "did"], correct: 0, topic: "Present Perfect", explanation: "Kehilangan di masa lampau yang berdampak sekarang (can't find) menggunakan 'have lost'."},
+                
+                // Countable/Uncountable (5 soal)
+                {q: "I need some _____ for my coffee.", options: ["sugar", "sugars", "sugar's", "a sugar"], correct: 0, topic: "Nouns", explanation: "'Sugar' adalah uncountable noun, tidak ada bentuk plural."},
+                {q: "There are three _____ on the table.", options: ["glass", "glasses", "glass's", "a glass"], correct: 1, topic: "Nouns", explanation: "'Three' menunjukkan plural. 'Glass' (gelas) adalah countable, bentuk plural 'glasses'."},
+                {q: "Can I have some _____?", options: ["water", "waters", "water's", "a water"], correct: 0, topic: "Nouns", explanation: "'Water' adalah uncountable noun. 'Some' dapat digunakan dengan uncountable."},
+                {q: "I bought two _____ of bread.", options: ["loaf", "loaves", "loafs", "a loaf"], correct: 1, topic: "Nouns", explanation: "'Two' menunjukkan plural. 'Loaf' bentuk irregular plural adalah 'loaves'."},
+                {q: "There isn't much _____ left.", options: ["time", "times", "a time", "timing"], correct: 0, topic: "Nouns", explanation: "'Much' digunakan dengan uncountable noun. 'Time' adalah uncountable."}
+            ],
+            B1: [
+                // Present Perfect Continuous (8 soal)
+                {q: "I _____ for two hours. I'm tired!", options: ["study", "am studying", "have been studying", "studied"], correct: 2, topic: "Perfect Continuous", explanation: "'For two hours' (durasi) + hasil sekarang (I'm tired) = Present Perfect Continuous."},
+                {q: "She _____ English since 2010.", options: ["teaches", "is teaching", "has been teaching", "taught"], correct: 2, topic: "Perfect Continuous", explanation: "'Since 2010' (titik awal) + masih berlangsung = Present Perfect Continuous."},
+                {q: "They _____ for the bus for 30 minutes.", options: ["wait", "are waiting", "have been waiting", "waited"], correct: 2, topic: "Perfect Continuous", explanation: "'For 30 minutes' menunjukkan durasi sampai sekarang. Gunakan 'have been waiting'."},
+                {q: "How long _____ you _____ here?", options: ["do / wait", "are / waiting", "have / been waiting", "did / wait"], correct: 2, topic: "Perfect Continuous", explanation: "Pertanyaan durasi sampai sekarang menggunakan Present Perfect Continuous."},
+                {q: "He looks dirty because he _____ in the garden.", options: ["works", "is working", "has been working", "worked"], correct: 2, topic: "Perfect Continuous", explanation: "Penjelasan kondisi sekarang (looks dirty) karena aktivitas berdurasi = has been working."},
+                {q: "It _____ all day.", options: ["rains", "is raining", "has been raining", "rained"], correct: 2, topic: "Perfect Continuous", explanation: "'All day' (durasi hari ini sampai sekarang) menggunakan Present Perfect Continuous."},
+                {q: "We _____ this project since January.", options: ["do", "are doing", "have been doing", "did"], correct: 2, topic: "Perfect Continuous", explanation: "'Since January' menunjukkan aksi berlangsung dari masa lalu sampai sekarang."},
+                {q: "I'm sorry I'm late. _____ you _____ long?", options: ["Do / wait", "Are / waiting", "Have / been waiting", "Did / wait"], correct: 2, topic: "Perfect Continuous", explanation: "Menanyakan durasi menunggu sampai sekarang menggunakan 'Have you been waiting'."},
+                
+                // Past Continuous (7 soal)
+                {q: "I _____ TV when the phone rang.", options: ["watch", "watched", "was watching", "am watching"], correct: 2, topic: "Past Continuous", explanation: "Aksi berlangsung (watching) terganggu oleh aksi singkat (rang). Gunakan Past Continuous."},
+                {q: "They _____ dinner at 8 PM yesterday.", options: ["have", "were having", "had", "are having"], correct: 1, topic: "Past Continuous", explanation: "'At 8 PM yesterday' (titik waktu spesifik di masa lalu) menggunakan Past Continuous."},
+                {q: "What _____ you _____ at this time yesterday?", options: ["did / do", "were / doing", "are / doing", "do / do"], correct: 1, topic: "Past Continuous", explanation: "Pertanyaan tentang aktivitas spesifik di masa lalu menggunakan 'were doing'."},
+                {q: "While I _____, someone knocked on the door.", options: ["sleep", "slept", "was sleeping", "am sleeping"], correct: 2, topic: "Past Continuous", explanation: "'While' + aksi berlangsung di masa lalu menggunakan Past Continuous."},
+                {q: "She _____ when I saw her.", options: ["runs", "was running", "ran", "is running"], correct: 1, topic: "Past Continuous", explanation: "Dua aksi di masa lalu: aksi berlangsung (running) dan aksi singkat (saw)."},
+                {q: "We _____ for the train when it started to rain.", options: ["wait", "were waiting", "waited", "are waiting"], correct: 1, topic: "Past Continuous", explanation: "Aksi berlangsung (waiting) terganggu oleh aksi lain (started to rain)."},
+                {q: "I _____ my homework while my mother was cooking.", options: ["do", "was doing", "did", "am doing"], correct: 1, topic: "Past Continuous", explanation: "Dua aksi berlangsung bersamaan di masa lalu menggunakan Past Continuous."},
+                
+                // Past Perfect (7 soal)
+                {q: "When I arrived, the movie _____.", options: ["starts", "started", "had started", "has started"], correct: 2, topic: "Past Perfect", explanation: "Aksi terjadi sebelum aksi lain di masa lalu (arrived). Gunakan Past Perfect 'had started'."},
+                {q: "She _____ never _____ such a beautiful place before.", options: ["has / seen", "had / seen", "did / see", "was / seeing"], correct: 1, topic: "Past Perfect", explanation: "Pengalaman sebelum titik waktu di masa lalu menggunakan Past Perfect 'had seen'."},
+                {q: "I was tired because I _____ all day.", options: ["work", "worked", "had been working", "was working"], correct: 2, topic: "Past Perfect", explanation: "Durasi sebelum titik waktu di masa lalu menggunakan Past Perfect Continuous."},
+                {q: "After they _____ dinner, they went for a walk.", options: ["have", "had", "had had", "have had"], correct: 2, topic: "Past Perfect", explanation: "Aksi sebelum aksi lain di masa lalu (went). 'Have' -> 'had had'."},
+                {q: "By the time we got there, the concert _____.", options: ["finishes", "finished", "had finished", "has finished"], correct: 2, topic: "Past Perfect", explanation: "'By the time' menunjukkan aksi selesai sebelum titik waktu di masa lalu."},
+                {q: "I realized I _____ my wallet at home.", options: ["leave", "left", "had left", "have left"], correct: 2, topic: "Past Perfect", explanation: "Realisasi di masa lalu tentang aksi sebelumnya menggunakan Past Perfect."},
+                {q: "She was nervous because she _____ before.", options: ["never flies", "had never flown", "never flew", "has never flown"], correct: 1, topic: "Past Perfect", explanation: "Pengalaman negatif sebelum titik waktu di masa lalu menggunakan Past Perfect."},
+                
+                // Conditionals Type 2 (7 soal)
+                {q: "If I _____ rich, I would buy a yacht.", options: ["am", "was", "were", "be"], correct: 2, topic: "Conditionals", explanation: "Conditional Type 2 (unreal present): If + Past Simple, would + verb. Semua subject gunakan 'were'."},
+                {q: "If she _____ harder, she would pass the exam.", options: ["study", "studied", "studies", "will study"], correct: 1, topic: "Conditionals", explanation: "Conditional Type 2: If + Past Simple (studied), would + verb."},
+                {q: "I would travel the world if I _____ the money.", options: ["have", "had", "would have", "had had"], correct: 1, topic: "Conditionals", explanation: "Conditional Type 2 untuk situasi tidak nyata sekarang. If + Past Simple."},
+                {q: "If I were you, I _____ that job.", options: ["take", "would take", "will take", "took"], correct: 1, topic: "Conditionals", explanation: "Conditional Type 2: would + verb dasar untuk advice (saran)."},
+                {q: "What would you do if you _____ a million dollars?", options: ["win", "won", "would win", "winned"], correct: 1, topic: "Conditionals", explanation: "Conditional Type 2: If + Past Simple (won)."},
+                {q: "If he _____ here, he would help us.", options: ["is", "was", "were", "be"], correct: 2, topic: "Conditionals", explanation: "Conditional Type 2: If + were (semua subject, termasuk 'he')."},
+                {q: "They would come if they _____ invited.", options: ["are", "were", "would be", "be"], correct: 1, topic: "Conditionals", explanation: "Conditional Type 2: If + Past Simple passive (were invited)."},
+                
+                // Passive Voice (7 soal)
+                {q: "The letter _____ yesterday.", options: ["sends", "sent", "was sent", "is sent"], correct: 2, topic: "Passive Voice", explanation: "Passive voice Past Simple: was/were + past participle (sent)."},
+                {q: "This book _____ by many people.", options: ["reads", "is read", "was read", "reading"], correct: 1, topic: "Passive Voice", explanation: "Passive voice Present Simple: am/is/are + past participle (read - dibaca)."},
+                {q: "The cake _____ by my mother.", options: ["makes", "is made", "made", "making"], correct: 1, topic: "Passive Voice", explanation: "Passive voice Present Simple: is + made (past participle of make)."},
+                {q: "The window _____ by the ball.", options: ["breaks", "broke", "was broken", "is breaking"], correct: 2, topic: "Passive Voice", explanation: "Kejadian di masa lalu menggunakan Passive Past Simple: was + broken."},
+                {q: "English _____ all over the world.", options: ["speaks", "is spoken", "was spoken", "spoken"], correct: 1, topic: "Passive Voice", explanation: "Fakta umum menggunakan Passive Present Simple: is + spoken."},
+                {q: "The project _____ next week.", options: ["finishes", "will be finished", "is finishing", "finished"], correct: 1, topic: "Passive Voice", explanation: "Passive Future Simple: will be + past participle (finished)."},
+                {q: "My car _____ at the moment.", options: ["repairs", "is being repaired", "was repaired", "repaired"], correct: 1, topic: "Passive Voice", explanation: "Passive Present Continuous: is being + past participle (repaired)."},
+                
+                // Reported Speech (7 soal)
+                {q: "He said, 'I am tired.' → He said that he _____ tired.", options: ["is", "was", "were", "be"], correct: 1, topic: "Reported Speech", explanation: "Reported speech: Present Simple (am) berubah menjadi Past Simple (was)."},
+                {q: "She said, 'I will call you.' → She said that she _____ call me.", options: ["will", "would", "can", "may"], correct: 1, topic: "Reported Speech", explanation: "Reported speech: Will berubah menjadi would (backshift)."},
+                {q: "They said, 'We have finished.' → They said that they _____ finished.", options: ["have", "had", "has", "would"], correct: 1, topic: "Reported Speech", explanation: "Reported speech: Present Perfect berubah menjadi Past Perfect (had)."},
+                {q: "'Close the door,' he said. → He told me _____ the door.", options: ["close", "to close", "closing", "closed"], correct: 1, topic: "Reported Speech", explanation: "Imperative dalam reported speech: tell + object + to + verb."},
+                {q: "She asked, 'Where do you live?' → She asked me where I _____", options: ["live", "lived", "living", "lives"], correct: 1, topic: "Reported Speech", explanation: "Wh-questions dalam reported speech: subject + verb (backshift to past)."},
+                {q: "'Don't touch that,' she said. → She told me _____ touch that.", options: ["don't", "not to", "to not", "didn't"], correct: 1, topic: "Reported Speech", explanation: "Negative imperative: tell + object + not to + verb."},
+                {q: "He said, 'I can swim.' → He said that he _____ swim.", options: ["can", "could", "would", "will"], correct: 1, topic: "Reported Speech", explanation: "Reported speech: Can berubah menjadi could (backshift)."},
+                
+                // Relative Clauses (7 soal)
+                {q: "The man _____ lives next door is a doctor.", options: ["who", "which", "whose", "whom"], correct: 0, topic: "Relative Clauses", explanation: "Subject untuk orang menggunakan 'who'."},
+                {q: "This is the book _____ I told you about.", options: ["who", "which", "whose", "whom"], correct: 1, topic: "Relative Clauses", explanation: "Object untuk benda menggunakan 'which' atau 'that'."},
+                {q: "The woman _____ car was stolen is my aunt.", options: ["who", "which", "whose", "whom"], correct: 2, topic: "Relative Clauses", explanation: "Kepemilikan menggunakan 'whose' (woman's car = whose car)."},
+                {q: "Is this the restaurant _____ you recommended?", options: ["who", "which", "whose", "where"], correct: 1, topic: "Relative Clauses", explanation: "Object untuk benda (restaurant) menggunakan 'which'."},
+                {q: "The boy _____ won the prize is my son.", options: ["who", "which", "whose", "whom"], correct: 0, topic: "Relative Clauses", explanation: "Subject untuk orang (the boy) menggunakan 'who'."},
+                {q: "Do you know the girl _____ we met yesterday?", options: ["who", "which", "whose", "whom"], correct: 3, topic: "Relative Clauses", explanation: "Object formal untuk orang menggunakan 'whom' (dapat juga menggunakan 'who')."},
+                {q: "This is the house _____ I was born.", options: ["who", "which", "that", "where"], correct: 3, topic: "Relative Clauses", explanation: "Keterangan tempat menggunakan 'where' (= in which)."}
+            ],
+            B2: [
+                // Mixed Conditionals (8 soal)
+                {q: "If I _____ harder at school, I would have a better job now.", options: ["study", "studied", "had studied", "would study"], correct: 2, topic: "Mixed Conditionals", explanation: "Mixed Conditional: If + Past Perfect (had studied - menyesal masa lalu), would + present (result now)."},
+                {q: "If I were taller, I _____ basketball when I was young.", options: ["play", "would play", "would have played", "had played"], correct: 2, topic: "Mixed Conditionals", explanation: "Mixed Conditional: If + Past Simple (were - tidak nyata sekarang), would have + participle (result past)."},
+                {q: "If we _____ the map, we wouldn't be lost now.", options: ["take", "took", "had taken", "would take"], correct: 2, topic: "Mixed Conditionals", explanation: "If + Past Perfect (had taken - kesalahan masa lalu), wouldn't be (result sekarang)."},
+                {q: "I would be fitter if I _____ to the gym last year.", options: ["go", "went", "had gone", "would go"], correct: 2, topic: "Mixed Conditionals", explanation: "Mixed Conditional: Result now (would be) dari kondisi past (had gone)."},
+                {q: "If she _____ more careful, she wouldn't have had the accident.", options: ["is", "was", "had been", "would be"], correct: 2, topic: "Mixed Conditionals", explanation: "If + Past Perfect (had been - kondisi past), wouldn't have had (result past)."},
+                {q: "We wouldn't have missed the plane if we _____ earlier.", options: ["leave", "left", "had left", "would leave"], correct: 2, topic: "Mixed Conditionals", explanation: "Third Conditional: If + Past Perfect, would have + participle."},
+                {q: "If I _____ you, I would have accepted that offer.", options: ["am", "was", "were", "had been"], correct: 2, topic: "Mixed Conditionals", explanation: "Subjunctive 'were' digunakan untuk 'If I were you' meskipun result di masa lalu."},
+                {q: "He would be happier now if he _____ that decision.", options: ["doesn't make", "didn't make", "hadn't made", "wouldn't make"], correct: 2, topic: "Mixed Conditionals", explanation: "If + Past Perfect (hadn't made - keputusan masa lalu), would be (result sekarang)."},
+                
+                // Inversion (7 soal)
+                {q: "_____ had I arrived when it started raining.", options: ["No sooner", "Hardly", "Scarcely", "All"], correct: 0, topic: "Inversion", explanation: "'No sooner... than' menggunakan inversion: No sooner + had + subject + participle."},
+                {q: "Hardly _____ the house when the phone rang.", options: ["I entered", "did I enter", "had I entered", "I had entered"], correct: 2, topic: "Inversion", explanation: "'Hardly... when' menggunakan inversion dengan Past Perfect: Hardly + had + subject + participle."},
+                {q: "Not only _____ late, but he also forgot the documents.", options: ["he was", "was he", "did he be", "he did be"], correct: 1, topic: "Inversion", explanation: "'Not only' di awal kalimat memerlukan inversion: Not only + was + subject."},
+                {q: "Seldom _____ such a beautiful sunset.", options: ["I saw", "did I see", "had I seen", "I have seen"], correct: 1, topic: "Inversion", explanation: "'Seldom' (jarang) di awal kalimat menggunakan inversion dengan auxiliary verb."},
+                {q: "Rarely _____ such talented musicians.", options: ["I meet", "do I meet", "did I meet", "I met"], correct: 1, topic: "Inversion", explanation: "'Rarely' di awal kalimat menggunakan inversion: Rarely + do/does + subject."},
+                {q: "Under no circumstances _____ the building.", options: ["you should leave", "should you leave", "you leave", "do you leave"], correct: 1, topic: "Inversion", explanation: "'Under no circumstances' (phrase negative) di awal kalimat menggunakan inversion."},
+                {q: "Little _____ that she was in danger.", options: ["she knew", "did she know", "had she known", "she knows"], correct: 1, topic: "Inversion", explanation: "'Little' (hampir tidak) di awal kalimat menggunakan inversion dengan did."},
+                
+                // Subjunctive & Wishes (7 soal)
+                {q: "I wish I _____ taller.", options: ["am", "was", "were", "be"], correct: 2, topic: "Subjunctive", explanation: "Setelah 'wish' untuk situasi tidak nyata sekarang, gunakan Past Simple (were untuk semua subject)."},
+                {q: "It's essential that he _____ on time.", options: ["arrives", "arrive", "arrived", "will arrive"], correct: 1, topic: "Subjunctive", explanation: "Setelah 'It's essential that', gunakan subjunctive (verb dasar tanpa to: arrive)."},
+                {q: "I wish I _____ harder for the exam.", options: ["study", "studied", "had studied", "would study"], correct: 2, topic: "Subjunctive", explanation: "Menyesal tentang masa lalu setelah 'wish': Past Perfect (had studied)."},
+                {q: "If only I _____ the answer!", options: ["know", "knew", "had known", "would know"], correct: 1, topic: "Subjunctive", explanation: "'If only' untuk situasi tidak nyata sekarang menggunakan Past Simple (knew)."},
+                {q: "I suggest that he _____ a doctor.", options: ["sees", "see", "saw", "would see"], correct: 1, topic: "Subjunctive", explanation: "Setelah 'suggest that', gunakan subjunctive (verb dasar: see)."},
+                {q: "She wishes she _____ to the party last night.", options: ["go", "went", "had gone", "would go"], correct: 2, topic: "Subjunctive", explanation: "Menyesal tentang kejadian spesifik di masa lalu: Past Perfect (had gone)."},
+                {q: "It's important that she _____ notified immediately.", options: ["is", "be", "was", "were"], correct: 1, topic: "Subjunctive", explanation: "Passive subjunctive: be + past participle (be notified)."},
+                
+                // Causative Have/Get (7 soal)
+                {q: "I _____ my hair cut yesterday.", options: ["had", "got", "have", "did"], correct: 0, topic: "Causative", explanation: "Causative have: S + had + object + past participle (have something done)."},
+                {q: "She _____ the car repaired at the garage.", options: ["had", "got", "made", "did"], correct: 0, topic: "Causative", explanation: "'Have something done' artinya meminta orang lain melakukan sesuatu untuk kita."},
+                {q: "We need to _____ the house painted.", options: ["have", "get", "make", "do"], correct: 0, topic: "Causative", explanation: "'Need to have something done' menggunakan causative have."},
+                {q: "He _____ his assistant make some copies.", options: ["had", "got", "made", "did"], correct: 2, topic: "Causative", explanation: "'Make someone do something' (aktif) berbeda dengan 'have something done' (pasif)."},
+                {q: "I _____ my teeth checked twice a year.", options: ["have", "get", "make", "do"], correct: 0, topic: "Causative", explanation: "Rutinitas menggunakan 'have something done' (have my teeth checked)."},
+                {q: "She finally _____ him to agree.", options: ["had", "got", "made", "did"], correct: 1, topic: "Causative", explanation: "'Get someone to do something' artinya membuat/persuade seseorang melakukan sesuatu."},
+                {q: "They _____ the software installed by a professional.", options: ["had", "got", "made", "did"], correct: 0, topic: "Causative", explanation: "Causative have untuk pekerjaan profesional: had + object + past participle."},
+                
+                // Ellipsis & Substitution (7 soal)
+                {q: "I don't like coffee, but my sister _____.", options: ["does", "likes", "is", "do"], correct: 0, topic: "Ellipsis", explanation: "Auxiliary verb 'does' menggantikan 'likes coffee' untuk menghindari pengulangan."},
+                {q: "He passed the exam, but I didn't _____", options: ["pass", "passed", "did", "do"], correct: 0, topic: "Ellipsis", explanation: "'Didn't pass' dapat disingkat menjadi 'didn't' dengan ellipsis."},
+                {q: "'Are you coming?' 'Yes, I _____.'", options: ["am", "come", "do", "will"], correct: 0, topic: "Ellipsis", explanation: "'Am' menggantikan 'am coming' dalam short answers."},
+                {q: "I enjoyed the movie, and my wife _____ too.", options: ["did", "enjoyed", "does", "is"], correct: 0, topic: "Ellipsis", explanation: "'Did' menggantikan 'enjoyed the movie' (past tense)."},
+                {q: "She speaks French better than I _____.", options: ["speak", "do", "am", "does"], correct: 1, topic: "Ellipsis", explanation: "'Do' menggantikan 'speak French' dalam perbandingan."},
+                {q: "'I love chocolate.' '_____ do I.'", options: ["So", "Neither", "Either", "Too"], correct: 0, topic: "Ellipsis", explanation: "'So + auxiliary + subject' untuk menyetujui pernyataan positif."},
+                {q: "I don't eat meat, and _____ does my brother.", options: ["so", "neither", "either", "too"], correct: 1, topic: "Ellipsis", explanation: "'Neither + auxiliary + subject' untuk menyetujui pernyataan negatif."},
+                
+                // Participle Clauses (7 soal)
+                {q: "_____ in the oven, the cake smelled delicious.", options: ["Baking", "Baked", "Having baked", "Being baked"], correct: 1, topic: "Participle Clauses", explanation: "Past participle (baked) untuk passive meaning (cake dibakar)."},
+                {q: "_____ the letter, she started to cry.", options: ["Reading", "Read", "Having read", "Being read"], correct: 2, topic: "Participle Clauses", explanation: "Perfect participle (having read) untuk aksi yang selesai sebelum aksi utama."},
+                {q: "The man _____ by the window is my uncle.", options: ["sit", "sitting", "sat", "having sat"], correct: 1, topic: "Participle Clauses", explanation: "Present participle (sitting) sebagai reduced relative clause (who is sitting)."},
+                {q: "_____ from the hill, the city looks beautiful.", options: ["Seeing", "Seen", "Having seen", "Being seen"], correct: 1, topic: "Participle Clauses", explanation: "Past participle (seen) untuk passive meaning (city dilihat)."},
+                {q: "_____ his homework, he went out to play.", options: ["Finishing", "Finished", "Having finished", "Being finished"], correct: 2, topic: "Participle Clauses", explanation: "Perfect participle menunjukkan urutan waktu: homework selesai dulu, baru main."},
+                {q: "Not _____ what to do, she called her mother.", options: ["know", "knowing", "known", "having known"], correct: 1, topic: "Participle Clauses", explanation: "Present participle negative (Not knowing) untuk alasan/situasi."},
+                {q: "The book _____ on the table is mine.", options: ["lay", "laying", "lying", "laid"], correct: 2, topic: "Participle Clauses", explanation: "'Lying' (present participle dari lie) berarti terbaring."},
+                
+                // Emphasis (7 soal)
+                {q: "_____ I want is a cup of coffee.", options: ["What", "That", "Which", "How"], correct: 0, topic: "Emphasis", explanation: "'What I want' = The thing that I want (wh-cleft untuk emphasis)."},
+                {q: "It was my brother _____ broke the window.", options: ["who", "which", "that", "whom"], correct: 0, topic: "Emphasis", explanation: "Cleft sentence: It was + focus + who/that + clause."},
+                {q: "_____ did she realize her mistake.", options: ["Only then", "Then only", "Only when", "When only"], correct: 0, topic: "Emphasis", explanation: "'Only then' di awal kalimat menggunakan inversion (did she realize)."},
+                {q: "It wasn't until yesterday _____ I found out.", options: ["when", "that", "which", "then"], correct: 1, topic: "Emphasis", explanation: "Cleft sentence negative: It wasn't until... that..."},
+                {q: "_____ call me if you need help.", options: ["Do", "Does", "Did", "Doing"], correct: 0, topic: "Emphasis", explanation: "'Do' di awal kalimat untuk emphasis (Do call me = please really call me)."},
+                {q: "It was in Paris _____ we first met.", options: ["where", "that", "which", "there"], correct: 1, topic: "Emphasis", explanation: "Cleft sentence untuk tempat: It was in Paris that..."},
+                {q: "Not until the end _____ the truth.", options: ["I knew", "did I know", "I did know", "knew I"], correct: 1, topic: "Emphasis", explanation: "'Not until' di awal kalimat menggunakan inversion."}
+            ]
+        };
+
+        // State Management
+        let currentLevel = '';
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = [];
+        let grammarStats = {};
+        let chart1 = null;
+        let chart2 = null;
+
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Start Level
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestions = [...questionBank[level]]; // Copy array
+            
+            // Shuffle questions for variety but keep consistent per session
+            // Note: Soal tetap sama urutannya dalam satu sesi browser karena tidak di-shuffle
+            // atau bisa di-shuffle dengan seed jika diinginkan
+            
+            currentIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            grammarStats = {};
+            
+            document.getElementById('levelSelection').style.display = 'none';
+            document.getElementById('resultsContainer').classList.remove('active');
+            document.getElementById('quizContainer').classList.add('active');
+            
+            updateProgress();
+            showQuestion();
+        }
+
+        // Show Question
+        function showQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('questionCounter').textContent = 
+                `Soal ${currentIndex + 1} dari ${currentQuestions.length}`;
+            document.getElementById('questionText').textContent = q.q;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, idx) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (userAnswers[currentIndex] === idx) {
+                    optionDiv.classList.add('selected');
+                }
+                if (userAnswers[currentIndex] !== null) {
+                    if (idx === q.correct) {
+                        optionDiv.classList.add('correct');
+                    } else if (userAnswers[currentIndex] === idx && idx !== q.correct) {
+                        optionDiv.classList.add('wrong');
+                    }
+                }
+                
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${letters[idx]}</div>
+                    <div>${opt}</div>
+                `;
+                optionDiv.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Show explanation if already answered
+            const explanationBox = document.getElementById('explanationBox');
+            if (userAnswers[currentIndex] !== null) {
+                document.getElementById('explanationText').textContent = q.explanation;
+                explanationBox.classList.add('show');
+            } else {
+                explanationBox.classList.remove('show');
+            }
+            
+            updateButtons();
+        }
+
+        // Select Option
+        function selectOption(index) {
+            if (userAnswers[currentIndex] !== null) return; // Already answered
+            
+            userAnswers[currentIndex] = index;
+            const q = currentQuestions[currentIndex];
+            
+            // Track grammar stats
+            if (!grammarStats[q.topic]) {
+                grammarStats[q.topic] = { correct: 0, total: 0 };
+            }
+            grammarStats[q.topic].total++;
+            if (index === q.correct) {
+                grammarStats[q.topic].correct++;
+            }
+            
+            showQuestion(); // Refresh to show colors
+            
+            // Auto advance after 2 seconds if correct, or show explanation
+            setTimeout(() => {
+                if (currentIndex < currentQuestions.length - 1) {
+                    nextQuestion();
+                } else {
+                    showResults();
+                }
+            }, 2500);
+        }
+
+        // Navigation
+        function nextQuestion() {
+            if (currentIndex < currentQuestions.length - 1) {
+                currentIndex++;
+                updateProgress();
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateProgress();
+                showQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentIndex === currentQuestions.length - 1 ? 'Finish ✓' : 'Next →';
+        }
+
+        // Show Results
+        function showResults() {
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('resultsContainer').classList.add('active');
+            
+            // Calculate score
+            let correct = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === currentQuestions[idx].correct) correct++;
+            });
+            
+            const percentage = Math.round((correct / currentQuestions.length) * 100);
+            
+            // Animate score
+            animateScore(percentage);
+            document.getElementById('scoreDetail').textContent = 
+                `${correct}/${currentQuestions.length} Benar (${percentage}%)`;
+            
+            // Determine recommendation
+            let recommendation = '';
+            if (percentage >= 80) {
+                recommendation = `Excellent! Anda sangat menguasai level ${currentLevel}. `;
+                if (currentLevel === 'A1') recommendation += 'Anda siap naik ke level A2!';
+                else if (currentLevel === 'A2') recommendation += 'Anda siap naik ke level B1!';
+                else if (currentLevel === 'B1') recommendation += 'Anda siap naik ke level B2!';
+                else recommendation += 'Anda telah menguasai level Intermediate. Saatnya ke Advanced!';
+            } else if (percentage >= 60) {
+                recommendation = `Good job! Anda cukup menguasai level ${currentLevel}, tapi masih perlu latihan di topik-topik tertentu. Lihat grafik analisis di atas untuk area yang perlu ditingkatkan.`;
+            } else {
+                recommendation = `Anda perlu lebih banyak belajar di level ${currentLevel}. Jangan menyerah! Fokus pada topik-topik dengan skor rendah di grafik analisis.`;
+            }
+            document.getElementById('recommendationText').textContent = recommendation;
+            
+            // Create charts
+            createCharts();
+        }
+
+        function animateScore(target) {
+            let current = 0;
+            const element = document.getElementById('scoreNumber');
+            const interval = setInterval(() => {
+                current += 2;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+                }
+                element.textContent = current;
+            }, 30);
+        }
+
+        // Create Charts
+        function createCharts() {
+            // Grammar Analysis Chart
+            const ctx1 = document.getElementById('grammarChart').getContext('2d');
+            const topics = Object.keys(grammarStats);
+            const correctData = topics.map(t => grammarStats[t].correct);
+            const totalData = topics.map(t => grammarStats[t].total - grammarStats[t].correct);
+            
+            if (chart1) chart1.destroy();
+            chart1 = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: topics,
+                    datasets: [{
+                        label: 'Benar',
+                        data: correctData,
+                        backgroundColor: 'rgba(124, 58, 237, 0.8)',
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Salah',
+                        data: totalData,
+                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            
+            // Distribution Chart
+            const ctx2 = document.getElementById('distributionChart').getContext('2d');
+            const correct = userAnswers.filter((ans, idx) => ans === currentQuestions[idx].correct).length;
+            const wrong = userAnswers.filter((ans, idx) => ans !== null && ans !== currentQuestions[idx].correct).length;
+            const unanswered = userAnswers.filter(ans => ans === null).length;
+            
+            if (chart2) chart2.destroy();
+            chart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Benar', 'Salah', 'Belum Dijawab'],
+                    datasets: [{
+                        data: [correct, wrong, unanswered],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(156, 163, 175, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(156, 163, 175, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Navigation Functions
+        function goHome() {
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('resultsContainer').classList.remove('active');
+            document.getElementById('levelSelection').style.display = 'grid';
+            currentLevel = '';
+            currentIndex = 0;
+        }
+
+        function restartLevel() {
+            if (currentLevel) {
+                startLevel(currentLevel);
+            }
+        }
+
+        // Initialize
+        createParticles();
+    </script>
+</body>
+</html>
